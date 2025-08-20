@@ -1,0 +1,42 @@
+pipeline {
+    agent any 
+
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('access_key')
+        AWS_SECRET_ACCESS_KEY = credentials('secret_key')
+    }
+    
+    stages {
+        stage('checkout') {
+            steps {
+                git 'https://github.com/Vishwajeetkumar17/terraform-jenkis-project.git'
+            }
+        }
+        stage('init') {
+            steps {
+                sh 'terraform init'
+            }
+        }
+        stage('validate') {
+            steps {
+                sh 'terraform validate'                
+            }
+        }
+        stage('plan') {
+            steps {
+                sh 'terraform plan'
+            }
+        }
+        stage('action') {
+            steps {
+                sh 'terraform $action --auto-approve'
+            }
+        }
+    }
+}
+
+
+for the variable 'action', go to 
+configure -> general -> This project is parameterized -> 
+select 'choice parameter' -> name it 'action' -> 
+add choices 'apply', 'destroy' -> save the configuration.
